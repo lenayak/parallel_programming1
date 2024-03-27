@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ctime>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -42,8 +43,51 @@ int** multiply_matrix(int** a, int** b, const int size)
 	return c;
 }
 
-void write_to_file(int** matrix, string filename);
-void write_to_file(int** matrix, string filename, unsigned int time);
+void write_to_file(int** matrix, int size, string filename)
+{
+	ofstream fout(filename);
+	if (!fout.is_open()) return;
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			fout << matrix[i][j] << "  ";
+		}
+		fout << endl;
+	}
+	fout.close();
+	return;
+}
+
+void write_to_file(int** matrix, int size, string filename, unsigned int time)
+{
+	ofstream fout(filename);
+	if (!fout.is_open()) return;
+	fout << "Size: " << size << endl;
+	fout << "Time: " << time << " milliseconds" << endl;
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			fout << matrix[i][j] << "  ";
+		}
+		fout << endl;
+	}
+	fout.close();
+	return;
+}
+
+void write_to_file(const int* sizes, string filename, unsigned int* times)
+{
+	ofstream fout(filename);
+	if (!fout.is_open()) return;
+	for (int i = 0; i < 5; i++)
+	{
+		fout << "Size: " << sizes[i] << "\t Time: " << times[i] << " milliseconds" << endl;
+	}
+	fout.close();
+	return;
+}
 
 int main()
 {
@@ -60,19 +104,20 @@ int main()
 		int** result = multiply_matrix(a, b, sizes[i]);
 		unsigned int end = clock();
 		unsigned int time = end - start;
-		string filenane_matrix_a = "matrix_a_" + to_string(sizes[i]);
-		string filename_matrix_b = "matrix_b_" + to_string(sizes[i]);
-		string filename_result = "matrix_result_" + to_string(sizes[i]);
-		write_to_file(a, filenane_matrix_a);
-		write_to_file(b, filename_matrix_b);
-		write_to_file(result, filename_result, time);
+		string filenane_matrix_a = "matrix_a_" + to_string(sizes[i]) + ".txt";
+		string filename_matrix_b = "matrix_b_" + to_string(sizes[i]) + ".txt";
+		string filename_result = "matrix_result_" + to_string(sizes[i]) + ".txt";
+		write_to_file(a, sizes[i], filenane_matrix_a);
+		write_to_file(b, sizes[i], filename_matrix_b);
+		write_to_file(result, sizes[i], filename_result, time);
 	 }
 	
 	// подсчет среднего времени
 
+	string filename_times = "average_times.txt";
+	unsigned int average_times[5] = { 0,0,0,0,0 };
 	for (int i = 0; i < 5; i++)
 	{
-		unsigned int average_times[5] = { 0,0,0,0,0 };
 		for (int j = 0; j < 10; j++)
 		{
 			int** a = create_random_matrix(sizes[i]);
@@ -84,8 +129,8 @@ int main()
 			average_times[i] += time;
 		}
 		average_times[i] / 10;
-		// тут запись результатов в отдельный файл (размер - время)
 	}
+	write_to_file(sizes, filename_times, average_times);
 
 	return 0;
 }
