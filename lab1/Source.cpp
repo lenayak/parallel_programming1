@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <ctime>
-#include <chrono>
+#include <string>
 
 using namespace std;
 
@@ -42,11 +42,50 @@ int** multiply_matrix(int** a, int** b, const int size)
 	return c;
 }
 
+void write_to_file(int** matrix, string filename);
+void write_to_file(int** matrix, string filename, unsigned int time);
+
 int main()
 {
 	srand(time(nullptr));
-	const int size = 4;
-	int** a = create_random_matrix(size);
-	int** b = create_random_matrix(size);
-	multiply_matrix(a, b, size);
+
+	// записываем в файлы матрицы a, b и результат перемножения
+
+	const int sizes[5] = { 100, 300, 500, 700, 1000 };
+	for (int i = 0; i < 5; i++)
+	{
+		int** a = create_random_matrix(sizes[i]);
+		int** b = create_random_matrix(sizes[i]);
+		unsigned int start = clock();
+		int** result = multiply_matrix(a, b, sizes[i]);
+		unsigned int end = clock();
+		unsigned int time = end - start;
+		string filenane_matrix_a = "matrix_a_" + to_string(sizes[i]);
+		string filename_matrix_b = "matrix_b_" + to_string(sizes[i]);
+		string filename_result = "matrix_result_" + to_string(sizes[i]);
+		write_to_file(a, filenane_matrix_a);
+		write_to_file(b, filename_matrix_b);
+		write_to_file(result, filename_result, time);
+	 }
+	
+	// подсчет среднего времени
+
+	for (int i = 0; i < 5; i++)
+	{
+		unsigned int average_times[5] = { 0,0,0,0,0 };
+		for (int j = 0; j < 10; j++)
+		{
+			int** a = create_random_matrix(sizes[i]);
+			int** b = create_random_matrix(sizes[i]);
+			unsigned int start = clock();
+			multiply_matrix(a, b, sizes[i]);
+			unsigned int end = clock();
+			unsigned int time = end - start;
+			average_times[i] += time;
+		}
+		average_times[i] / 10;
+		// тут запись результатов в отдельный файл (размер - время)
+	}
+
+	return 0;
 }
