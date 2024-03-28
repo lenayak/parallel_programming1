@@ -1,0 +1,5 @@
+Size: 100	 Time: 25035 milliseconds
+Size: 300	 Time: 171071 milliseconds
+Size: 500	 Time: 544621 milliseconds
+Size: 700	 Time: 1287957 milliseconds
+Size: 1000	 Time: 2221620 milliseconds
